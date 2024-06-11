@@ -4,13 +4,15 @@
 
 // TokenType is the enum defining the tokens that the language supports
 enum TokenType {
-    Number, //
-    Identifier, //
-    Equals, //
-    OpenParen, // 
-    ClosedParen, //
+    Number,
+    Identifier,
+    Equals, 
+    OpenParen, 
+    ClosedParen,
     BinaryOperator,
-    Let // 
+    Let,
+    Keyword,
+    BooleanLiteral,
 };
 
 struct Token {
@@ -32,18 +34,51 @@ bool isAlpha(const std::string &str) {
     return true;
 }
 
+bool isKeyword(const std::string &str) {
+    if(str == "def") return true;
+    return false;
+}
+
 
 std::vector<std::string> splitString(std::string &words) {
     std::vector<std::string> ret;
     std::string curWord;
+    bool inComment = false;
+
     for(int i = 0; i < words.size(); i++) {
 
-        if(words[i] != ' ') {
-            curWord += words[i];
+        // Handle Comments 
+        if(inComment) {
+            if(words[i] == '\n') inComment = false;
+            continue;
         }
-        else if(!curWord.empty()) {
-            ret.push_back(curWord);
-            curWord.clear();
+        if( i < words.size()-1 && words[i] == '/' && words[i+1] == '/') {
+            inComment = true;
+            i++;
+            if(!curWord.empty()) {
+                ret.push_back(curWord);
+                curWord.clear();
+            }
+            continue;
+        }
+
+
+        if(isspace(words[i])) {
+            if(!curWord.empty()) {
+                ret.push_back(curWord);
+                curWord.clear();
+            }
+        }
+        else if (words[i] == '(' || words[i] == ')' || words[i] == '{' || words[i] == '}'\
+                || words[i] == '+' || words[i] == '-' || words[i] == '*' || words[i] == '/') {
+            if(!curWord.empty()) {
+                ret.push_back(curWord);
+                curWord.clear();
+            }
+            ret.push_back(std::string(1, words[i]));
+        }
+        else {
+            curWord += words[i];
         }
     }
 
@@ -57,23 +92,27 @@ std::vector<std::string> splitString(std::string &words) {
 
 std::vector<Token> tokenize(std::string &sourceCode) {
 
-    // Split code into words
     std::vector<std::string> words = splitString(sourceCode);
 
-    // Iterate through words and create tokens
     std::vector<Token> tokens;
     while(!words.empty()) {
         std::string word = words.front();
         words.erase(words.begin());
 
-        if (word == "(") {
+        if (word == "(" || word == "{") {
             tokens.push_back(Token{word, TokenType::OpenParen});
-        } else if (word == ")") {
+        } else if (word == ")" || word == "}") {
             tokens.push_back(Token{word, TokenType::ClosedParen});
         } else if (word == "=") {
             tokens.push_back(Token{word, TokenType::Equals});
+        } else if (word == "+" || word == "-" || word == "*" || word == "/") {
+            tokens.push_back(Token{word, TokenType::BinaryOperator});
         } else if (word == "let") {
             tokens.push_back(Token{word, TokenType::Let});
+        } else if (isKeyword(word)) {
+            tokens.push_back(Token{word, TokenType::Keyword});
+        } else if (word == "True" || word == "False") {
+            tokens.push_back(Token{word, TokenType::BooleanLiteral});
         } else if (isNumber(word)) {
             tokens.push_back(Token{word, TokenType::Number});
         } else if (isAlpha(word)) {

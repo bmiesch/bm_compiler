@@ -1,0 +1,9 @@
+
+// This is a comment
+def main() {
+    let a = 5
+    let b = 10
+    let atimesb = a*b
+    let c = True
+    let longVariableName = 10
+}
