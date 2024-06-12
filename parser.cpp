@@ -25,19 +25,38 @@ public:
 
 private:
     TokenType type;
-    std::vector<ASTNodePtr> children = 0;
+    std::vector<ASTNodePtr> children;
 };
+
 
 class NumberNode : public ASTNode {
 public:
-    NumberNode() : ASTNode(TokenType::Number) {}
+    NumberNode(int value) : ASTNode(TokenType::Number), value(value) {}
+
+    int getValue() const {return value;}
+
+private:
+    int value;
 };
+
+
+class IdentifierNode : public ASTNode {
+public:
+    IdentifierNode(const std::string& name) : ASTNode(TokenType::Identifier), name(name) {}
+
+    const std::string& getName() const {return name;}
+
+private:
+    std::string name;
+};
+
 
 class Parser {
 public:
     Parser(const std::vector<Token>& tokens) : tokens(tokens) {}
 
-    ASTNode* parse() {
+    // Entry function
+    ASTNodePtr parse() {
         // Start parsing and return the root of the AST
         return nullptr;
     }
@@ -45,4 +64,45 @@ public:
 private:
     std::vector<Token> tokens;
     int current = 0;
+
+    bool match(TokenType type) {
+        if(peek().type == type){
+            advance();
+            return true;
+        }
+        return false;
+    }
+    
+    const Token& peek() const {
+        if (current < tokens.size()) {return tokens[current];}
+
+        // At the end of tokens
+        Token endToken = Token{"", TokenType::End};
+        return endToken;
+    }
+
+    void advance() {
+        if (current < tokens.size()) {current++;}
+    }
+
+    ASTNodePtr parseExpression() {
+        auto node = parseTerm();
+        // TODO: Implement
+    }
+    ASTNodePtr parseTerm() {
+        auto node = parseFactor();
+        // TODO: Implement
+    }
+    ASTNodePtr parseFactor() {
+        if(match(TokenType::Number)){
+            return std::make_shared<NumberNode>(std::stoi(peek().value));
+        }
+        else if (match(TokenType::Identifier)) {
+            return std::make_shared<IdentifierNode>(peek().value);
+        }
+    }
+    void parseLetStatement();
+    void parseFunctionDefinition();
+
+
 };

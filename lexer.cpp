@@ -13,6 +13,7 @@ enum TokenType {
     Let,
     Keyword,
     BooleanLiteral,
+    End
 };
 
 struct Token {
