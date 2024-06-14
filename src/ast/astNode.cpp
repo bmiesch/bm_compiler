@@ -26,3 +26,15 @@ BinaryOperatorNode::BinaryOperatorNode(TokenType op, ASTNodePtr left, ASTNodePtr
 ASTNodePtr BinaryOperatorNode::getLeft() const { return left; }
 
 ASTNodePtr BinaryOperatorNode::getRight() const { return right; }
+
+Equals::Equals(ASTNodePtr left, ASTNodePtr right) : ASTNode(TokenType::Equals), left(left), right(right) {}
+
+ASTNodePtr Equals::getLeft() const { return left; }
+
+ASTNodePtr Equals::getRight() const { return right; }
+
+LetNode::LetNode(ASTNodePtr identifier, ASTNodePtr value) : ASTNode(TokenType::Let), identifier(identifier), value(value) {}
+
+ASTNodePtr LetNode::getIdentifier() const { return identifier; }
+
+ASTNodePtr LetNode::getValue() const { return value; }

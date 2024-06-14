@@ -51,4 +51,26 @@ private:
     ASTNodePtr right;
 };
 
+class EqualsNode : public ASTNode {
+public:
+    Equals(ASTNodePtr left, ASTNodePtr right);
+    ASTNodePtr getLeft() const;
+    ASTNodePtr getRight() const;
+
+private:
+    ASTNodePtr left;
+    ASTNodePtr right;
+};
+
+class LetNode : public : ASTNode {
+public:
+    LetNode(ASTNodePtr identifier, ASTNodePtr value);
+    ASTNodePtr getIdentifier() const;
+    ASTNodePtr getValue() const;
+private:
+    ASTNodePtr identifier;
+    ASTNodePtr value;
+};
+
+
 #endif // ASTNODE_H

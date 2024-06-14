@@ -28,16 +28,30 @@ void Parser::advance() {
 
 ASTNodePtr Parser::parseExpression() {
     auto node = parseTerm();
-    if(match(TokenType::BinaryOperator)) {
-        auto op = tokens[current-1].type;
-        auto right = parseTerm();
-        node = std::make_shared<BinaryOperatorNode>(op, node, right);
+    if(match(TokenType::Let)) {
+        auto identifier = parseFactor();
+        if (!match(TokenType::Equals)) {
+            throw std::runtime_error("Expected '='");
+        }
+        auto value = parseExpression();
+        node = std::make_shared<LetNode>(identifier, value);
     }
+
     return node;
 }
 
 ASTNodePtr Parser::parseTerm() {
     auto node = parseFactor();
+    if(match(TokenType::BinaryOperator)) {
+        auto op = tokens[current-1].type;
+        auto right = parseTerm();
+        node = std::make_shared<BinaryOperatorNode>(op, node, right);
+    }
+    else if (match(TokenType::Equals)) {
+        auto right = parseExpression();
+        node = std::make_shared<EqualsNode>(node, right);
+    }
+
     return node;
 }
 
@@ -48,6 +62,13 @@ ASTNodePtr Parser::parseFactor() {
     }
     else if (match(TokenType::Identifier)) {
         return std::make_shared<IdentifierNode>(tokens[current-1].value);
+    }
+    else if (match(TokenType::OpenParen)) {
+        ASTNodePtr node = parseExpression();
+        if (!match(TokenType::ClosedParen)) {
+            throw std::runtime_error("Expected ')'");
+        }
+        return node;
     }
     else {
         throw std::runtime_error("Unexpected token");
