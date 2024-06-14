@@ -1,47 +1,29 @@
 #include <string>
 #include <iostream>
+#include "lexer.h"
 
 
-// TokenType is the enum defining the tokens that the language supports
-enum TokenType {
-    Number,
-    Identifier,
-    Equals, 
-    OpenParen, 
-    ClosedParen,
-    BinaryOperator,
-    Let,
-    Keyword,
-    BooleanLiteral,
-    End
-};
-
-struct Token {
-    std::string value;
-    TokenType type;
-};
-
-bool isNumber(const std::string &str) {
+static bool isNumber(const std::string &str) {
     for(char c : str) {
         if(!isdigit(c)) return false;
     }
     return true;
 }
 
-bool isAlpha(const std::string &str) {
+static bool isAlpha(const std::string &str) {
     for(char c : str) {
         if(!isalpha(c)) return false;
     }
     return true;
 }
 
-bool isKeyword(const std::string &str) {
+static bool isKeyword(const std::string &str) {
     if(str == "def") return true;
     return false;
 }
 
 
-std::vector<std::string> splitString(std::string &words) {
+static std::vector<std::string> splitString(std::string &words) {
     std::vector<std::string> ret;
     std::string curWord;
     bool inComment = false;

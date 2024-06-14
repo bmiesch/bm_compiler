@@ -1,7 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "lexer.cpp"
+#include "lexer.h"
+#include "parser.h"
 
 
 std::string readFile(const std::string& filename) {
@@ -34,6 +35,14 @@ int main(int argc, char* argv[]) {
     std::vector<Token> tokens = tokenize(sourceCode);
 
     printTokens(tokens);
+
+    Parser parser(tokens);
+    try {
+        ASTNodePtr ast = parser.parse();
+        std::cout << "Parsing successful!" << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+    }
 
     return 0;
 }
