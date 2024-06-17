@@ -5,6 +5,15 @@
 #include "parser.h"
 
 
+void generateDotFile(const ASTNodePtr& root, const std::string& filename) {
+    std::ofstream file(filename);
+    file << "digraph G {\n";
+    file << root->toDot();
+    file << "}\n";
+    file.close();
+}
+
+
 std::string readFile(const std::string& filename) {
     std::ifstream file(filename);
     if (!file) {
@@ -35,11 +44,13 @@ int main(int argc, char* argv[]) {
     std::vector<Token> tokens = tokenize(sourceCode);
 
     printTokens(tokens);
+    std::cout << "Tokenization successful!" << std::endl;
 
     Parser parser(tokens);
     try {
         ASTNodePtr ast = parser.parse();
         std::cout << "Parsing successful!" << std::endl;
+        generateDotFile(ast, "ast.dot");
     } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
