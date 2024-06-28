@@ -82,10 +82,14 @@ std::vector<Token> tokenize(std::string &sourceCode) {
         std::string word = words.front();
         words.erase(words.begin());
 
-        if (word == "(" || word == "{") {
+        if (word == "(") {
             tokens.push_back(Token{word, TokenType::OpenParen});
-        } else if (word == ")" || word == "}") {
+        } else if (word == "{") {
+            tokens.push_back(Token{word, TokenType::OpenBracket});
+        } else if (word == ")") {
             tokens.push_back(Token{word, TokenType::ClosedParen});
+        } else if (word == "}") {
+            tokens.push_back(Token{word, TokenType::ClosedBracket});
         } else if (word == "=") {
             tokens.push_back(Token{word, TokenType::Equals});
         } else if (word == "+" || word == "-" || word == "*" || word == "/") {

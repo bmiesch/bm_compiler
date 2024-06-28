@@ -1,5 +1,6 @@
 #include "parser.h"
 #include <stdexcept>
+#include <iostream>
 
 Parser::Parser(const std::vector<Token>& tokens) : tokens(tokens) {}
 
@@ -27,17 +28,48 @@ void Parser::advance() {
 }
 
 ASTNodePtr Parser::parseExpression() {
-    auto node = parseTerm();
     if(match(TokenType::Let)) {
         auto identifier = parseFactor();
         if (!match(TokenType::Equals)) {
             throw std::runtime_error("Expected '='");
         }
         auto value = parseExpression();
-        node = std::make_shared<LetNode>(identifier, value);
+        return std::make_shared<LetNode>(identifier, value);
+    }
+    else if (match(TokenType::Keyword) && tokens[current-1].value == "def") {
+        // Start of function
+        if (!match(TokenType::Identifier)) {
+            throw std::runtime_error("Expected function name");
+        }
+        std::string name = tokens[current-1].value;
+
+        // Handle function arguments
+        std::vector<ASTNodePtr> params;
+        if (!match(TokenType::OpenParen)) {
+            throw std::runtime_error("Expected '('");
+        }
+        while (!match(TokenType::ClosedParen)) {
+            if (!match(TokenType::Identifier)) {
+                throw std::runtime_error("Expected parameter name");
+            }
+            params.push_back(std::make_shared<IdentifierNode>(tokens[current-1].value));
+        }
+
+        // Handle function body
+        std::vector<ASTNodePtr> bodyNodes;
+        if (!match(TokenType::OpenBracket)) {
+            throw std::runtime_error("Expected '{'");
+        }
+        while (!match(TokenType::ClosedBracket)) {
+            bodyNodes.push_back(parseExpression());
+        }
+        if (bodyNodes.empty()) {
+            throw std::runtime_error("Expected function body");
+        }
+        return std::make_shared<FunctionNode>(name, params, bodyNodes);
     }
 
-    return node;
+    return parseTerm();
 }
 
 ASTNodePtr Parser::parseTerm() {
@@ -63,6 +95,10 @@ ASTNodePtr Parser::parseFactor() {
     else if (match(TokenType::Identifier)) {
         return std::make_shared<IdentifierNode>(tokens[current-1].value);
     }
+    else if (match(TokenType::BooleanLiteral)) {
+        bool value = tokens[current-1].value == "True";
+        return std::make_shared<BooleanLiteralNode>(value);
+    }
     else if (match(TokenType::OpenParen)) {
         ASTNodePtr node = parseExpression();
         if (!match(TokenType::ClosedParen)) {
@@ -71,6 +107,6 @@ ASTNodePtr Parser::parseFactor() {
         return node;
     }
     else {
-        throw std::runtime_error("Unexpected token");
+        throw std::runtime_error("Unexpected token " + tokens[current].value);
     }
 }

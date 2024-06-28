@@ -10,6 +10,8 @@ enum TokenType {
     Equals,
     OpenParen,
     ClosedParen,
+    OpenBracket,
+    ClosedBracket,
     BinaryOperator,
     Let,
     Keyword,

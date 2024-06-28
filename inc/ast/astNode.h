@@ -140,11 +140,15 @@ private:
 
 class FunctionNode : public ASTNode {
 public:
-    FunctionNode(const std::string& name, const std::vector<ASTNodePtr>& bodyNodes)
-            : ASTNode(TokenType::Keyword), name(name), bodyNodes(bodyNodes) {}
+    FunctionNode(const std::string& name, const std::vector<ASTNodePtr>& params, const std::vector<ASTNodePtr>& bodyNodes)
+            : ASTNode(TokenType::Keyword), name(name), params(params), bodyNodes(bodyNodes) {}
 
     const std::string& getName() const {
         return name;
+    }
+
+    const std::vector<ASTNodePtr>& getParams() const {
+        return params;
     }
 
     const std::vector<ASTNodePtr>& getBodyNodes() const {
@@ -153,6 +157,10 @@ public:
 
     std::string toDot() const override {
         std::string dot = "node" + std::to_string(reinterpret_cast<std::uintptr_t>(this)) + " [label=\"" + name + "\"];\n";
+        for (const auto& param : params) {
+            dot += "node" + std::to_string(reinterpret_cast<std::uintptr_t>(this)) + " -> node" + std::to_string(reinterpret_cast<std::uintptr_t>(param.get())) + ";\n";
+            dot += param->toDot();
+        }
         for (const auto& bodyNode : bodyNodes) {
             dot += "node" + std::to_string(reinterpret_cast<std::uintptr_t>(this)) + " -> node" + std::to_string(reinterpret_cast<std::uintptr_t>(bodyNode.get())) + ";\n";
             dot += bodyNode->toDot();
@@ -162,6 +170,7 @@ public:
 
 private:
     std::string name;
+    std::vector<ASTNodePtr> params;
     std::vector<ASTNodePtr> bodyNodes;
 };
 
