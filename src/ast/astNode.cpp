@@ -1,44 +1,39 @@
 #include "astNode.h"
+#include "astVisitor.h"
 
-ASTNode::ASTNode(TokenType type) : type(type) {}
+// ASTNode implementation
 
-TokenType ASTNode::getType() { return type; }
-
-void ASTNode::addChild(ASTNodePtr child){
-    children.push_back(child);
+// NumberNode implementation
+void NumberNode::accept(ASTVisitor& visitor) {
+    visitor.visit(*this);
 }
 
-const std::vector<ASTNodePtr>& ASTNode::getChildren() {
-    return children;
+// IdentifierNode implementation
+void IdentifierNode::accept(ASTVisitor& visitor) {
+    visitor.visit(*this);
 }
 
-NumberNode::NumberNode(int value) : ASTNode(TokenType::Number), value(value) {}
+// BinaryOperatorNode implementation
+void BinaryOperatorNode::accept(ASTVisitor& visitor) {
+    visitor.visit(*this);
+}
 
-int NumberNode::getValue() const { return value; }
+// EqualsNode implementation
+void EqualsNode::accept(ASTVisitor& visitor) {
+    visitor.visit(*this);
+}
 
-IdentifierNode::IdentifierNode(const std::string& name) : ASTNode(TokenType::Identifier), name(name) {}
+// LetNode implementation
+void LetNode::accept(ASTVisitor& visitor) {
+    visitor.visit(*this);
+}
 
-const std::string& IdentifierNode::getName() const { return name; }
+// FunctionNode implementation
+void FunctionNode::accept(ASTVisitor& visitor) {
+    visitor.visit(*this);
+}
 
-BinaryOperatorNode::BinaryOperatorNode(TokenType op, ASTNodePtr left, ASTNodePtr right)
-        : ASTNode(op), left(left), right(right) {}
-
-ASTNodePtr BinaryOperatorNode::getLeft() const { return left; }
-
-ASTNodePtr BinaryOperatorNode::getRight() const { return right; }
-
-EqualsNode::EqualsNode(ASTNodePtr left, ASTNodePtr right) : ASTNode(TokenType::Equals), left(left), right(right) {}
-
-ASTNodePtr EqualsNode::getLeft() const { return left; }
-
-ASTNodePtr EqualsNode::getRight() const { return right; }
-
-LetNode::LetNode(ASTNodePtr identifier, ASTNodePtr value) : ASTNode(TokenType::Let), identifier(identifier), value(value) {}
-
-ASTNodePtr LetNode::getIdentifier() const { return identifier; }
-
-ASTNodePtr LetNode::getValue() const { return value; }
-
-BooleanLiteralNode::BooleanLiteralNode(bool value) : ASTNode(TokenType::BooleanLiteral), value(value) {}
-
-bool BooleanLiteralNode::getValue() const { return value; }
+// BooleanLiteralNode implementation
+void BooleanLiteralNode::accept(ASTVisitor& visitor) {
+    visitor.visit(*this);
+}

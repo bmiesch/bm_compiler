@@ -3,6 +3,7 @@
 #include <sstream>
 #include "lexer.h"
 #include "parser.h"
+#include "semanticAnalyzer.h"
 
 
 void generateDotFile(const ASTNodePtr& root, const std::string& filename) {
@@ -47,13 +48,17 @@ int main(int argc, char* argv[]) {
     std::cout << "Tokenization successful!" << std::endl;
 
     Parser parser(tokens);
+    ASTNodePtr ast;
     try {
-        ASTNodePtr ast = parser.parse();
+        ast = parser.parse();
         std::cout << "Parsing successful!" << std::endl;
         generateDotFile(ast, "ast.dot");
     } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
+
+    SemanticAnalyzer semanticAnalyzer;
+    ast->accept(semanticAnalyzer);
 
     return 0;
 }

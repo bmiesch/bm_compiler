@@ -6,7 +6,8 @@
 
 enum class SymbolType {
     VARIABLE,
-    FUNCTION
+    FUNCTION,
+    PARAMETER
 };
 
 struct SymbolInfo {
