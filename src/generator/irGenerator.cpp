@@ -15,7 +15,7 @@ std::string IRGenerator::handleLiteral(ASTNodePtr node) {
         return tempVar;
     } else if (auto booleanNode = std::dynamic_pointer_cast<BooleanLiteralNode>(node)) {
         std::string tempVar = newTempVar();
-        generateInstruction(IRInstructionType::LOAD, tempVar, booleanNode->getValue() ? "true" : "false", "");
+        generateInstruction(IRInstructionType::LOAD, tempVar, booleanNode->getValue() ? "1" : "0", "");
         return tempVar;
     } else if (auto identifierNode = std::dynamic_pointer_cast<IdentifierNode>(node)) {
         std::string tempVar = newTempVar();
@@ -75,7 +75,7 @@ void IRGenerator::visit(LetNode& node) {
             valueTemp = handleLiteral(value);
         }
 
-        generateInstruction(IRInstructionType::ALLOCA, identifier->getName(), "", "");
+        // generateInstruction(IRInstructionType::ALLOC, identifier->getName(), "", "");
         generateInstruction(IRInstructionType::STORE, identifier->getName(), valueTemp, "");
     }
 }
@@ -96,5 +96,5 @@ void IRGenerator::visit(IdentifierNode& node) {
 }
 
 void IRGenerator::visit(BooleanLiteralNode& node) {
-    generateInstruction(IRInstructionType::LOAD, newTempVar(), node.getValue() ? "true" : "false", "");
+    generateInstruction(IRInstructionType::LOAD, newTempVar(), node.getValue() ? "1" : "0", "");
 }

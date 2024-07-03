@@ -5,6 +5,7 @@
 #include "parser.h"
 #include "semanticAnalyzer.h"
 #include "irGenerator.h"
+#include "codeGenerator.h"
 
 
 void generateDotFile(const ASTNodePtr& root, const std::string& filename) {
@@ -61,9 +62,17 @@ int main(int argc, char* argv[]) {
     SemanticAnalyzer semanticAnalyzer;
     ast->accept(semanticAnalyzer);
 
+    // Generate Intermediate Representations
     IRGenerator irGen;
     irGen.generateIR(ast);
     irGen.printIR();
+    std::vector<IRInstruction> irInstructions = irGen.getIRInstructions();
+
+    // Generate Code
+    CodeGenerator codeGen;
+    codeGen.generateCode(irInstructions);
+    codeGen.printCode();
+    codeGen.disassembleCode();
 
     return 0;
 }

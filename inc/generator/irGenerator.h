@@ -15,7 +15,7 @@ enum class IRInstructionType {
     DIV,
     LOAD,
     STORE,
-    ALLOCA,
+    ALLOC,
     RET,
     // Add more as needed
 };
@@ -37,6 +37,8 @@ public:
     ~IRGenerator() = default;
 
     void generateIR(ASTNodePtr root);
+
+    std::vector<IRInstruction> getIRInstructions() const { return irInstructions; }
 
     void printIR() {
         for (const auto& instr : irInstructions) {
