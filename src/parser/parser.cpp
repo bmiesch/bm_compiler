@@ -74,7 +74,7 @@ ASTNodePtr Parser::parseExpression() {
 
 ASTNodePtr Parser::parseTerm() {
     auto node = parseFactor();
-    if(match(TokenType::BinaryOperator)) {
+    if(match(TokenType::Add) || match(TokenType::Subtract) || match(TokenType::Multiply) || match(TokenType::Divide)) {
         auto op = tokens[current-1].type;
         auto right = parseTerm();
         node = std::make_shared<BinaryOperatorNode>(op, node, right);

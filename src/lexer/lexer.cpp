@@ -92,8 +92,14 @@ std::vector<Token> tokenize(std::string &sourceCode) {
             tokens.push_back(Token{word, TokenType::ClosedBracket});
         } else if (word == "=") {
             tokens.push_back(Token{word, TokenType::Equals});
-        } else if (word == "+" || word == "-" || word == "*" || word == "/") {
-            tokens.push_back(Token{word, TokenType::BinaryOperator});
+        } else if (word == "+") {
+            tokens.push_back(Token{word, TokenType::Add});
+        } else if (word == "-") {
+            tokens.push_back(Token{word, TokenType::Subtract});
+        } else if (word == "*") {
+            tokens.push_back(Token{word, TokenType::Multiply});
+        } else if (word == "/") {
+            tokens.push_back(Token{word, TokenType::Divide});
         } else if (word == "let") {
             tokens.push_back(Token{word, TokenType::Let});
         } else if (isKeyword(word)) {

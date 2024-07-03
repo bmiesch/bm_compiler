@@ -1,7 +1,6 @@
 #include "astNode.h"
 #include "astVisitor.h"
 
-// ASTNode implementation
 
 // NumberNode implementation
 void NumberNode::accept(ASTVisitor& visitor) {

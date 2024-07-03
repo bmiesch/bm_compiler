@@ -56,7 +56,10 @@ public:
             case TokenType::ClosedParen: return "ClosedParen";
             case TokenType::OpenBracket: return "OpenBracket";
             case TokenType::ClosedBracket: return "ClosedBracket";
-            case TokenType::BinaryOperator: return "BinaryOperator";
+            case TokenType::Add: return "Add";
+            case TokenType::Subtract: return "Subtract";
+            case TokenType::Multiply: return "Multiply";
+            case TokenType::Divide: return "Divide";
             case TokenType::Let: return "Let";
             case TokenType::Keyword: return "Keyword";
             case TokenType::BooleanLiteral: return "BooleanLiteral";
@@ -117,11 +120,15 @@ public:
     ASTNodePtr getLeft() const { return left; }
     ASTNodePtr getRight() const { return right; }
 
+    void setResultVar(const std::string& resultVar) { this->resultVar = resultVar; }
+    std::string getResultVar() const { return resultVar; }
+
     void accept(ASTVisitor& visitor) override;
 
 private:
     ASTNodePtr left;
     ASTNodePtr right;
+    std::string resultVar;
 
     // Override toDot to include the operator
     std::string toDot() const override {

@@ -4,6 +4,7 @@
 #include "lexer.h"
 #include "parser.h"
 #include "semanticAnalyzer.h"
+#include "irGenerator.h"
 
 
 void generateDotFile(const ASTNodePtr& root, const std::string& filename) {
@@ -59,6 +60,10 @@ int main(int argc, char* argv[]) {
 
     SemanticAnalyzer semanticAnalyzer;
     ast->accept(semanticAnalyzer);
+
+    IRGenerator irGen;
+    irGen.generateIR(ast);
+    irGen.printIR();
 
     return 0;
 }
